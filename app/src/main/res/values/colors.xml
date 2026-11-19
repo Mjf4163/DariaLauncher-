@@ -1,0 +1,9 @@
+<resources>
+    <color name="bg_black">#0A0A0F</color>
+    <color name="bg_card">#15151D</color>
+    <color name="accent_blue">#4D7CFE</color>
+    <color name="accent_purple">#9B5DE5</color>
+    <color name="text_primary">#FFFFFF</color>
+    <color name="text_secondary">#9A9AA8</color>
+    <color name="divider">#22222E</color>
+</resources>
