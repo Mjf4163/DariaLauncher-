@@ -1,0 +1,50 @@
+name: Build Daria Launcher APK
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+  workflow_dispatch: # امکان اجرای دستی ورک‌فلو با یک کلیک از تب Actions
+
+jobs:
+  build:
+    name: Compile and Build APK
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: '8.7'
+
+      # از آنجا که فایل‌های gradlew در پروژه اولیه موجود نیستند، این مرحله آن‌ها را به‌طور خودکار ایجاد می‌کند
+      - name: Generate Gradle Wrapper if Missing
+        run: |
+          if [ ! -f "gradlew" ]; then
+            echo "Gradle wrapper not found. Generating wrapper with Gradle 8.7..."
+            gradle wrapper --gradle-version 8.7
+          fi
+          chmod +x gradlew
+
+      - name: Grant Execute Permission for Gradlew
+        run: chmod +x gradlew
+
+      - name: Build Debug APK
+        run: ./gradlew assembleDebug --stacktrace
+
+      - name: Upload Debug APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: DariaLauncher-Debug-APK
+          path: app/build/outputs/apk/debug/app-debug.apk
+          retention-days: 14
